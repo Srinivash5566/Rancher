@@ -1,6 +1,7 @@
 import { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import component from './stylesheet/component.module.css'; // Import CSS module
+import component from './stylesheet/component.module.css';
 
 const Community = () => {
   const navigate = useNavigate();
@@ -12,6 +13,13 @@ const Community = () => {
   ]);
 
   const [newMessage, setNewMessage] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    setIsLoggedIn(!!token); // Set logged in state based on token presence
+  }, []);
 
   const handleSendMessage = () => {
     if (newMessage.trim()) {
@@ -19,6 +27,12 @@ const Community = () => {
       setMessages([...messages, newMsg]);
       setNewMessage('');
     }
+  };
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('authToken');
+    setIsLoggedIn(false);
   };
 
   return (
@@ -32,10 +46,14 @@ const Community = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="auth-buttons">
-          <button className="sign-in" onClick={() => navigate('/LoginPage')}>
-            Sign In
-          </button>
-          <button className="log-in">Log In</button>
+          {isLoggedIn ? (
+            <button className="log-out" onClick={handleLogout}>Log Out</button>
+          ) : (
+            <>
+              <button className="sign-in" onClick={() => navigate('/LoginPage')}>Sign In</button>
+              <button className="log-in">Log In</button>
+            </>
+          )}
         </div>
       </header>
 
@@ -55,15 +73,17 @@ const Community = () => {
         ))}
       </div>
 
-      <div className={component.message_input_container}>
-        <input
-          type="text"
-          placeholder="Type your question"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <button onClick={handleSendMessage}>Send</button>
-      </div>
+      {isLoggedIn && (
+        <div className={component.message_input_container}>
+          <input
+            type="text"
+            placeholder="Type your question"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <button onClick={handleSendMessage}>Send</button>
+        </div>
+      )}
     </div>
   );
 };

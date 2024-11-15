@@ -1,29 +1,36 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import api from '../api';
 import './stylesheet/LoginPage.css';
 
 const RegisterPage = () => {
-  const [userName,setUserName] = useState('');
+  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigator = useNavigate();
+  const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    navigator("/")
-    console.log("Email: ", email);
-    console.log("Password: ", password);
-  };
+    try {
+        const response = await api.post('/register', { userName, email, password });
+        console.log('Registration successful:', response.data);
+        navigate('/');  // Redirect to home after successful registration
+    } catch (error) {
+        console.error('Registration error:', error.response ? error.response.data : error.message);
+    }
+};
+
 
   return (
     <div className="login-page">
       <div className="login-container">
         <h2>Sign Up</h2>
-        <form onSubmit={handleLogin}>
-          <label>User Name</label>
+        <form onSubmit={handleRegister}>
+          <label>Username</label>
           <input
             type="text"
-            placeholder="Enter your name"
+            placeholder="Enter your username"
+            value={userName}
             onChange={(e) => setUserName(e.target.value)}
             required
           />
@@ -31,6 +38,7 @@ const RegisterPage = () => {
           <input
             type="email"
             placeholder="Enter your email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -42,11 +50,8 @@ const RegisterPage = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button type="submit" className="login-btn">Log In</button>
+          <button type="submit" className="login-btn">Sign Up</button>
         </form>
-        <div className="signup-prompt">
-          Do you have an account? <Link to="/LoginPage">Log in</Link>
-        </div>
       </div>
     </div>
   );

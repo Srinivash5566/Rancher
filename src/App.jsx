@@ -1,3 +1,5 @@
+// src/App.jsx
+import { AuthProvider } from './AuthContext';
 import Home from './pages/Home';
 import LoginPage from './pages/LoginPage';
 import Community from './pages/community';
@@ -6,9 +8,10 @@ import No404 from './pages/No404';
 import RegisterPage from './pages/RegisterPage';
 import CardInfo from './pages/CardInfo';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+
 const App = () => {
   return (
-    <>
+    <AuthProvider>
       <Router>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -20,7 +23,8 @@ const App = () => {
           <Route path='*' element={<No404 />} />
         </Routes>
       </Router>
-    </>
+    </AuthProvider>
   );
 };
+
 export default App;

@@ -1,17 +1,25 @@
+// src/pages/LoginPage.jsx
 import { useState } from 'react';
-import { useNavigate , Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import api from '../api';
+import { useAuth } from '../AuthContext'; // Import useAuth for login context
 import './stylesheet/LoginPage.css';
 
 const LoginPage = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const navigator = useNavigate();
+  const navigate = useNavigate();
+  const { login } = useAuth(); // Get login function from AuthContext
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    navigator("/")
-    console.log("Email: ", email);
-    console.log("Password: ", password);
+    try {
+      const response = await api.post('/login', { email, password });
+      login(response.data.token); // Store token and update state
+      navigate('/');  // Redirect to home after login
+    } catch (error) {
+      console.error('Login error:', error.response ? error.response.data : error.message);
+    }
   };
 
   return (
@@ -37,9 +45,6 @@ const LoginPage = () => {
           />
           <button type="submit" className="login-btn">Log In</button>
         </form>
-        <div className="signup-prompt">
-          Do you have an account? <Link to="/RegisterPage">Sign Up</Link>
-        </div>
       </div>
     </div>
   );

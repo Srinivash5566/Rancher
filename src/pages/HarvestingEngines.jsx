@@ -1,10 +1,17 @@
 import { Link, useNavigate } from 'react-router-dom';
 import component from './stylesheet/component.module.css'; // Import the CSS module
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 const HarvestingEngines = () => {
   const navigate = useNavigate();
   const [search, setSearch] = useState('');
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check if user is logged in
+  useEffect(() => {
+    const token = localStorage.getItem('authToken');
+    setIsLoggedIn(!!token); // Set logged in state based on token presence
+  }, []);
 
   // Define your engines with appropriate image paths
   const engines = [
@@ -13,6 +20,12 @@ const HarvestingEngines = () => {
     { id: 3, image: 'https://placehold.co/600x400', alt: 'Green Tractor' },
     { id: 4, image: 'https://placehold.co/600x400', alt: 'Red Tractor' },
   ];
+
+  // Logout handler
+  const handleLogout = () => {
+    localStorage.removeItem('authToken'); // Remove the token from localStorage
+    setIsLoggedIn(false); // Update the state to reflect logout
+  };
 
   return (
     <div className={component.harvesting_engines}>
@@ -25,10 +38,14 @@ const HarvestingEngines = () => {
           onChange={(e) => setSearch(e.target.value)}
         />
         <div className="auth-buttons">
-          <button className="sign-in" onClick={() => navigate('/LoginPage')}>
-            Sign In
-          </button>
-          <button className="log-in">Log In</button>
+          {isLoggedIn ? (
+            <button className="log-out" onClick={handleLogout}>Log Out</button>
+          ) : (
+            <>
+              <button className="sign-in" onClick={() => navigate('/LoginPage')}>Sign In</button>
+              <button className="log-in">Log In</button>
+            </>
+          )}
         </div>
       </header>
 
