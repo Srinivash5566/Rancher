@@ -1,0 +1,26 @@
+body{
+    color: white;
+}
+header{
+    display: flex;
+    background-color: #0e1a23;
+}
+header h1{
+    padding: 20px;
+    color: #00b67a;
+}
+#GoArrowLeft{
+    height: 35px;
+    width: 45px;
+    padding-left: 2px;
+    padding-right: 2px;
+    margin: 19px;
+    color: #00b67a;
+    border: 2px solid #00b67a;
+    border-radius: 9px;
+}
+#GoArrowLeft:hover{
+    /* color: #019463;
+    border: 2px solid #019463; */
+    transform: scale(1.03);
+}
